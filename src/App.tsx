@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Landing from "./views/landing";
-//import Login from "./views/Login";
-//import Register from "./views/Register";
+import Login from "./views/login";
+import Register from "./views/register";
+import Meeting from "./views/meeting";
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<string>(() => {
@@ -45,11 +45,11 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="min-h-screen relative">
-        <Navbar theme={theme} setTheme={setTheme} />
         <Routes>
           <Route path="/" element={<Landing theme={theme} />} />
-          {/* <Route path="/login" element={<Login theme={theme} />} /> */}
-          {/* <Route path="/register" element={<Register theme={theme} />} /> */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/meeting" element={<Meeting />} />
         </Routes>
       </div>
     </BrowserRouter>
