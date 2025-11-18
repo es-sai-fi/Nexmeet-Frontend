@@ -5,7 +5,8 @@
  * Replace this value with your backend URL if needed.
  * @constant {string}
  */
-export const API_BASE_URL = "";
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 /**
  * API endpoint definitions for different functionalities.
@@ -17,6 +18,7 @@ export const API_BASE_URL = "";
  * @property {string} LOGOUT - Endpoint for logging out the user.
 
  */
+
 export const API_ENDPOINTS = {
   // Autenticación
   LOGIN: "/users/login",

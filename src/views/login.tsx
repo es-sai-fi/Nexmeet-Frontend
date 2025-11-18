@@ -16,7 +16,48 @@ import logo from "../assets/logo.png";
 import facebook from "../assets/facebook.webp";
 import github from "../assets/github.png";
 import google from "../assets/google.png";
+import { signInWithPopup } from "firebase/auth";
+import {
+  auth,
+  googleProvider,
+  facebookProvider,
+  githubProvider,
+} from "../config/firebase";
+import { httpClient } from "../utils/httpClient";
+import { API_ENDPOINTS } from "../utils/constants";
 
+const handleSocialLogin = async (provider: any) => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const token = await user.getIdToken();
+
+    // Guarda token y usuario localmente
+    localStorage.setItem("authToken", token);
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: user.uid,
+        email: user.email,
+        name: user.displayName,
+        photoURL: user.photoURL,
+      }),
+    );
+
+    // Notifica al backend para registrar al usuario si no existe
+    await httpClient.post(API_ENDPOINTS.REGISTER, {
+      name: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      age: 25, // esto puedes cambiarlo o quitarlo según tu lógica
+    });
+
+    window.location.href = "/home";
+  } catch (error: any) {
+    console.error("Error en login social:", error);
+    alert("Hubo un error al iniciar sesión con el proveedor.");
+  }
+};
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
@@ -169,19 +210,28 @@ const Login: React.FC = () => {
 
             {/* Redes sociales */}
             <div className="social-media-container">
-              <a href="#" className="social-link">
+              <button
+                className="social-link"
+                onClick={() => handleSocialLogin(googleProvider)}
+              >
                 <img src={google} className="social-logo" alt="Google Logo" />
-              </a>
-              <a href="#" className="social-link">
+              </button>
+              <button
+                className="social-link"
+                onClick={() => handleSocialLogin(facebookProvider)}
+              >
                 <img
                   src={facebook}
                   className="social-logo"
                   alt="Facebook Logo"
                 />
-              </a>
-              <a href="#" className="social-link">
+              </button>
+              <button
+                className="social-link"
+                onClick={() => handleSocialLogin(githubProvider)}
+              >
                 <img src={github} className="social-logo" alt="Github Logo" />
-              </a>
+              </button>
             </div>
           </div>
         </div>
